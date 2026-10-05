@@ -31,6 +31,8 @@
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
     h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
     .subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .sheet-link-btn { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 11px; text-decoration: none; font-weight: 600; transition: 0.2s; }
+    .sheet-link-btn:hover { background: rgba(56, 189, 248, 0.2); }
 
     /* Pot Highlight Card */
     .pot-card { background: linear-gradient(135deg, #1e1b4b 0%, #172554 100%); border: 1px solid #4338ca; border-radius: 16px; padding: 18px; text-align: center; box-shadow: 0 10px 25px rgba(67, 56, 202, 0.25); margin-bottom: 16px; }
@@ -94,6 +96,7 @@
     /* Action Button */
     .btn-bet { width: 100%; height: 50px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border: none; border-radius: 12px; color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4); transition: 0.2s; }
     .btn-bet:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6); }
+    .btn-bet:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     /* Error Message */
     .error-msg { color: #f87171; font-size: 11px; margin-top: 4px; display: none; font-weight: 600; }
@@ -121,10 +124,15 @@
   <div class="header">
     <div class="brand-badge">
       <span class="live-dot"></span>
-      Kreo Internal Sale Stakes
+      Google Sheet Live Sync Active
     </div>
     <h1>Today's Prediction Pool</h1>
     <div class="subtitle">Real Cash Stakes. Real Odds. ₹50 – ₹200 Per Bet.</div>
+    <div>
+      <a href="https://docs.google.com/spreadsheets/d/1tOdnzNytmAxahKhH4lgJzKrtGeQcMzwi52MGS-6jWBE/edit" target="_blank" class="sheet-link-btn">
+        📊 View Google Sheet Ledger
+      </a>
+    </div>
   </div>
 
   <!-- Pot Card -->
@@ -142,7 +150,7 @@
   <div class="rules-banner">
     <span style="font-size: 18px;">🎯</span>
     <div>
-      <b>House Rules:</b> Bets are strictly capped between <b>₹50 and ₹200</b>. 100% of the money goes to whoever predicts correctly. Odds update live as the team places their picks!
+      <b>House Rules:</b> Bets are strictly capped between <b>₹50 and ₹200</b>. Bets instantly write to our shared Google Sheet and sync in real-time across everyone's phone!
     </div>
   </div>
 
@@ -273,14 +281,14 @@
     </div>
 
     <!-- Place Bet Button -->
-    <button class="btn-bet" onclick="submitBet()">Lock In Cash Bet</button>
+    <button class="btn-bet" id="submitBetBtn" onclick="submitBet()">Lock In Cash Bet</button>
   </div>
 
   <!-- Live Bets Ledger Feed -->
   <div class="feed-card">
     <div class="feed-header">
       <span>🔥 Live Bets on the Floor</span>
-      <span style="font-size:11px; color:#38bdf8; cursor:pointer;" onclick="renderFeed()">Refresh</span>
+      <span style="font-size:11px; color:#38bdf8; cursor:pointer;" onclick="fetchLiveBets()">🔄 Sync Now</span>
     </div>
     <div id="betsFeed">
       <!-- Injected by JS -->
@@ -289,16 +297,19 @@
 
   <!-- Admin / Resolution Preview -->
   <div class="settle-box">
-    <div class="settle-title">⚡ Settlement & UPI Payout Engine</div>
+    <div class="settle-title">⚡ Live Google Sheet Backed Settlement</div>
     <p style="font-size:11px; color:#94a3b8; margin-top:4px;">
-      At 09:00 AM tomorrow, once actual sales and ROAS lock in, the winning option is selected and the system outputs who pays who via UPI.
+      All bets are permanently recorded in the team Google Sheet. Once sales and ROAS metrics finalize tomorrow morning, winnings will be audited and settled via UPI.
     </p>
   </div>
 
 </div>
 
 <script>
-  // Clean State: All pools start at 0
+  const API_ENDPOINT = "https://kreostakesclean.vercel.app/api/bet";
+  const GVIZ_ENDPOINT = "https://docs.google.com/spreadsheets/d/1tOdnzNytmAxahKhH4lgJzKrtGeQcMzwi52MGS-6jWBE/gviz/tq?tqx=out:json";
+
+  // Market structure
   let markets = {
     product: {
       name: "Highest Selling SKU",
@@ -330,29 +341,7 @@
     }
   };
 
-  // Zero initial bets - completely clean slate
   let liveBets = [];
-
-  // Local storage persistence so bets stay in the user's browser
-  const STORAGE_KEY = "kreo_stakes_bets_v1";
-  if (localStorage.getItem(STORAGE_KEY)) {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (Array.isArray(saved) && saved.length > 0) {
-        liveBets = saved;
-        // Rebuild pools
-        liveBets.forEach(b => {
-          for (let mKey in markets) {
-            let opt = markets[mKey].options.find(o => o.name === b.pick);
-            if (opt) {
-              opt.pool += b.amount;
-            }
-          }
-        });
-      }
-    } catch(e){}
-  }
-
   let currentMarketKey = "product";
   let currentSelectedOptionId = "p1";
 
@@ -361,6 +350,69 @@
     selectOption("product", "p1");
     renderFeed();
     updateTotalPot();
+    fetchLiveBets();
+    setInterval(fetchLiveBets, 6000);
+  }
+
+  // Dual-source fetch: Vercel serverless API with GViz fallback
+  async function fetchLiveBets() {
+    try {
+      const res = await fetch(API_ENDPOINT);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.bets)) {
+          applyBets(data.bets);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Primary API unavailable, attempting GViz fallback...", e);
+    }
+
+    // Fallback: Direct public GViz query
+    try {
+      const gRes = await fetch(GVIZ_ENDPOINT);
+      const text = await gRes.text();
+      const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);/);
+      if (match) {
+        const json = JSON.parse(match[1]);
+        const rows = json.table.rows || [];
+        const parsed = rows.map(r => ({
+          timestamp: r.c[0] ? r.c[0].v : "",
+          bettor: r.c[1] ? r.c[1].v : "",
+          market: r.c[2] ? r.c[2].v : "",
+          pick: r.c[3] ? r.c[3].v : "",
+          amount: r.c[4] ? parseFloat(r.c[4].v) || 0 : 0,
+          status: r.c[5] ? r.c[5].v : "Confirmed"
+        }));
+        applyBets(parsed);
+      }
+    } catch (err) {
+      console.error("All fetch sources failed:", err);
+    }
+  }
+
+  function applyBets(bets) {
+    // Reset pools
+    for (let m in markets) {
+      markets[m].options.forEach(o => o.pool = 0);
+    }
+
+    bets.forEach(b => {
+      let amt = parseFloat(b.amount) || 0;
+      for (let mKey in markets) {
+        let opt = markets[mKey].options.find(o => o.name.toLowerCase() === (b.pick || "").toLowerCase());
+        if (opt) {
+          opt.pool += amt;
+        }
+      }
+    });
+
+    liveBets = bets.slice().reverse();
+    renderAllMarkets();
+    updateTotalPot();
+    renderFeed();
+    calculateReturn();
   }
 
   function updateTotalPot() {
@@ -452,7 +504,6 @@
     let opt = m.options.find(o => o.id === currentSelectedOptionId);
     let currentTotal = m.options.reduce((sum, o) => sum + o.pool, 0);
     
-    // Projected pool if this bet is placed
     let projectedTotal = currentTotal + stake;
     let projectedOptPool = opt.pool + stake;
     let projectedOdds = projectedOptPool > 0 ? (projectedTotal / projectedOptPool) : 1;
@@ -461,7 +512,7 @@
     document.getElementById("potentialReturn").innerText = currentTotal > 0 ? ("₹" + payout.toLocaleString("en-IN")) : ("₹" + stake + " (First bet)");
   }
 
-  function submitBet() {
+  async function submitBet() {
     let bettor = document.getElementById("bettorSelect").value;
     let stake = parseFloat(document.getElementById("stakeInput").value) || 0;
     
@@ -470,28 +521,38 @@
       return;
     }
 
+    let btn = document.getElementById("submitBetBtn");
+    btn.disabled = true;
+    btn.innerText = "Syncing to Google Sheet...";
+
     let m = markets[currentMarketKey];
     let opt = m.options.find(o => o.id === currentSelectedOptionId);
-    opt.pool += stake;
-
-    liveBets.unshift({
-      bettor: bettor,
-      market: m.name,
-      pick: opt.name,
-      amount: stake,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    });
 
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(liveBets));
-    } catch(e){}
+      const res = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bettor: bettor,
+          market: m.name,
+          pick: opt.name,
+          amount: stake
+        })
+      });
 
-    confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 } });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to record bet on Google Sheet");
+      }
 
-    renderAllMarkets();
-    updateTotalPot();
-    selectOption(currentMarketKey, currentSelectedOptionId);
-    renderFeed();
+      confetti({ particleCount: 60, spread: 60, origin: { y: 0.8 } });
+      await fetchLiveBets();
+    } catch (err) {
+      alert("Error saving bet: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "Lock In Cash Bet";
+    }
   }
 
   function renderFeed() {
@@ -499,25 +560,32 @@
     if (liveBets.length === 0) {
       html = `<div style="text-align:center; padding:20px; font-size:12px; color:#64748b;">No bets placed yet. Be the first to stake a pick!</div>`;
     } else {
-      liveBets.slice(0, 15).forEach(b => {
-        let initial = b.bettor.charAt(0);
+      liveBets.slice(0, 20).forEach(b => {
+        let initial = (b.bettor || "?").charAt(0);
+        let timeStr = b.timestamp ? b.timestamp.split(",")[1] || b.timestamp : "";
         html += `
           <div class="bet-item">
             <div class="bet-bettor">
               <span class="avatar-pill">${initial}</span>
               <div>
                 <div>${b.bettor}</div>
-                <div style="font-size:10px; color:#64748b;">${b.time || ''}</div>
+                <div style="font-size:10px; color:#64748b;">${timeStr}</div>
               </div>
             </div>
             <div class="bet-pick">${b.pick}</div>
-            <div class="bet-stake">₹${b.amount.toLocaleString("en-IN")}</div>
+            <div class="bet-stake">₹${parseFloat(b.amount || 0).toLocaleString("en-IN")}</div>
           </div>
         `;
       });
     }
     document.getElementById("betsFeed").innerHTML = html;
   }
+
+  // Refresh immediately when window comes into focus
+  window.addEventListener("focus", fetchLiveBets);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") fetchLiveBets();
+  });
 
   init();
 </script>
