@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Kreo Sale Stakes — Internal Prediction Market</title>
+  <title>Kreo Team Sale Stakes — Internal Prediction Pool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
@@ -25,36 +25,36 @@
     .container { max-width: 600px; margin: 0 auto; padding: 16px; }
 
     /* Top Bar */
-    .header { text-align: center; padding: 20px 0 16px; border-bottom: 1px solid var(--card-border); margin-bottom: 20px; }
+    .header { text-align: center; padding: 16px 0 14px; border-bottom: 1px solid var(--card-border); margin-bottom: 16px; }
     .brand-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); color: #a5b4fc; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
     .live-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    h1 { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+    h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
     .subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
     /* Pot Highlight Card */
-    .pot-card { background: linear-gradient(135deg, #1e1b4b 0%, #172554 100%); border: 1px solid #4338ca; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 10px 25px rgba(67, 56, 202, 0.25); margin-bottom: 24px; }
-    .pot-label { font-size: 12px; color: #a5b4fc; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; }
-    .pot-amount { font-size: 42px; font-weight: 900; color: #38bdf8; margin: 6px 0; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
-    .pot-meta { font-size: 12px; color: #cbd5e1; display: flex; justify-content: center; gap: 16px; margin-top: 8px; }
+    .pot-card { background: linear-gradient(135deg, #1e1b4b 0%, #172554 100%); border: 1px solid #4338ca; border-radius: 16px; padding: 18px; text-align: center; box-shadow: 0 10px 25px rgba(67, 56, 202, 0.25); margin-bottom: 16px; }
+    .pot-label { font-size: 11px; color: #a5b4fc; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; }
+    .pot-amount { font-size: 38px; font-weight: 900; color: #38bdf8; margin: 4px 0; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+    .pot-meta { font-size: 12px; color: #cbd5e1; display: flex; justify-content: center; gap: 14px; margin-top: 6px; }
 
     /* Rules Banner */
-    .rules-banner { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #fde68a; margin-bottom: 20px; line-height: 1.4; display: flex; gap: 10px; align-items: center; }
+    .rules-banner { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #fde68a; margin-bottom: 18px; line-height: 1.4; display: flex; gap: 10px; align-items: center; }
 
     /* Market Selector Tabs */
-    .tabs { display: flex; gap: 8px; background: #12141f; padding: 4px; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 16px; overflow-x: auto; }
-    .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted); font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s; white-space: nowrap; text-align: center; }
+    .tabs { display: flex; gap: 8px; background: #12141f; padding: 4px; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 14px; }
+    .tab-btn { flex: 1; padding: 10px 6px; border: none; background: transparent; color: var(--text-muted); font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s; white-space: nowrap; text-align: center; }
     .tab-btn.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px var(--primary-glow); }
 
     /* Market Cards */
-    .market-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 24px; }
-    .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--card-border); }
-    .market-title { font-size: 16px; font-weight: 700; }
-    .market-pool { font-size: 12px; color: var(--accent); font-weight: 700; background: rgba(16, 185, 129, 0.1); padding: 3px 8px; border-radius: 12px; }
+    .market-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 20px; }
+    .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--card-border); }
+    .market-title { font-size: 15px; font-weight: 700; }
+    .market-pool { font-size: 11px; color: var(--accent); font-weight: 700; background: rgba(16, 185, 129, 0.1); padding: 3px 8px; border-radius: 12px; }
 
     /* Options List */
-    .options-list { display: flex; flex-direction: column; gap: 10px; }
-    .option-item { background: #0c0e17; border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; }
+    .options-list { display: flex; flex-direction: column; gap: 9px; }
+    .option-item { background: #0c0e17; border: 1px solid var(--card-border); border-radius: 12px; padding: 11px 13px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; }
     .option-item:hover, .option-item.selected { border-color: var(--primary); background: #16192a; }
     .option-item.selected { box-shadow: 0 0 0 2px var(--primary); }
     .option-left { z-index: 1; }
@@ -66,8 +66,11 @@
     .pool-bar { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(99, 102, 241, 0.08); z-index: 0; transition: width 0.3s ease; }
 
     /* Bet Slip Section */
-    .bet-slip { background: #161929; border: 1px solid #312e81; border-radius: 16px; padding: 18px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .slip-title { font-size: 13px; font-weight: 800; color: #a5b4fc; text-transform: uppercase; margin-bottom: 12px; }
+    .bet-slip { background: #161929; border: 1px solid #312e81; border-radius: 16px; padding: 18px; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .slip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .slip-title { font-size: 13px; font-weight: 800; color: #a5b4fc; text-transform: uppercase; }
+    .limit-tag { font-size: 11px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+    
     .selected-summary { background: #0c0d17; border: 1px solid var(--card-border); border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
     .sel-market { font-size: 11px; color: var(--text-muted); }
     .sel-outcome { font-size: 14px; font-weight: 700; color: #fff; margin-top: 2px; }
@@ -92,18 +95,21 @@
     .btn-bet { width: 100%; height: 50px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border: none; border-radius: 12px; color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4); transition: 0.2s; }
     .btn-bet:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6); }
 
+    /* Error Message */
+    .error-msg { color: #f87171; font-size: 11px; margin-top: 4px; display: none; font-weight: 600; }
+
     /* Bets Feed & Leaderboard */
-    .feed-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-top: 24px; }
+    .feed-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-top: 20px; }
     .feed-header { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .bet-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1f2338; font-size: 12px; }
+    .bet-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #1f2338; font-size: 12px; }
     .bet-item:last-child { border-bottom: none; }
-    .bet-bettor { font-weight: 700; color: #f1f5f9; display: flex; align-items: center; gap: 6px; }
-    .avatar-pill { width: 22px; height: 22px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
-    .bet-pick { color: var(--text-muted); }
+    .bet-bettor { font-weight: 700; color: #f1f5f9; display: flex; align-items: center; gap: 8px; }
+    .avatar-pill { width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
+    .bet-pick { color: var(--text-muted); font-size: 11px; }
     .bet-stake { font-weight: 800; color: #38bdf8; }
 
     /* Settlement Modal / Admin Box */
-    .settle-box { margin-top: 24px; background: #0c0e17; border: 1px dashed #334155; border-radius: 12px; padding: 14px; }
+    .settle-box { margin-top: 20px; background: #0c0e17; border: 1px dashed #334155; border-radius: 12px; padding: 14px; }
     .settle-title { font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase; }
   </style>
 </head>
@@ -117,16 +123,16 @@
       <span class="live-dot"></span>
       Kreo Internal Sale Stakes
     </div>
-    <h1>Today's Prediction Market</h1>
-    <div class="subtitle">Real Cash Stakes. Real Odds. 0% House Edge.</div>
+    <h1>Today's Prediction Pool</h1>
+    <div class="subtitle">Real Cash Stakes. Real Odds. ₹50 – ₹200 Per Bet.</div>
   </div>
 
   <!-- Pot Card -->
   <div class="pot-card">
     <div class="pot-label">Total Real Cash Pool for Today</div>
-    <div class="pot-amount" id="totalPotDisplay">₹8,500</div>
+    <div class="pot-amount" id="totalPotDisplay">₹2,150</div>
     <div class="pot-meta">
-      <span>👥 14 Active Bets</span>
+      <span>👥 15 Bets Placed</span>
       <span>⏰ Closes: 02:00 PM IST</span>
       <span>🏆 100% Payout to Winners</span>
     </div>
@@ -134,9 +140,9 @@
 
   <!-- Rules Banner -->
   <div class="rules-banner">
-    <span style="font-size: 18px;">💡</span>
+    <span style="font-size: 18px;">🎯</span>
     <div>
-      <b>How It Works:</b> All money goes into the pot. Odds are calculated parimutuel-style. If you back an underdog that hits, you win a massive cash multiplier! Losers' stakes fund the winners' payouts.
+      <b>House Rules:</b> Bets are strictly capped between <b>₹50 and ₹200</b>. 100% of the money goes to whoever predicts correctly. Odds update live as the team places their picks!
     </div>
   </div>
 
@@ -151,7 +157,7 @@
   <div class="market-box" id="market-product">
     <div class="market-header">
       <div class="market-title">Highest Selling SKU (Gross Revenue)</div>
-      <div class="market-pool" id="pool-product">Pool: ₹4,200</div>
+      <div class="market-pool" id="pool-product">Pool: ₹1,050</div>
     </div>
     <div class="options-list" id="list-product">
       <!-- Options injected by JS -->
@@ -162,7 +168,7 @@
   <div class="market-box" id="market-topline" style="display:none;">
     <div class="market-header">
       <div class="market-title">Today's Total Net Topline</div>
-      <div class="market-pool" id="pool-topline">Pool: ₹2,500</div>
+      <div class="market-pool" id="pool-topline">Pool: ₹650</div>
     </div>
     <div class="options-list" id="list-topline">
       <!-- Options injected by JS -->
@@ -173,7 +179,7 @@
   <div class="market-box" id="market-roas" style="display:none;">
     <div class="market-header">
       <div class="market-title">Today's Blended Marketing ROAS</div>
-      <div class="market-pool" id="pool-roas">Pool: ₹1,800</div>
+      <div class="market-pool" id="pool-roas">Pool: ₹450</div>
     </div>
     <div class="options-list" id="list-roas">
       <!-- Options injected by JS -->
@@ -182,7 +188,10 @@
 
   <!-- Real Cash Bet Slip -->
   <div class="bet-slip">
-    <div class="slip-title">🎟️ Place Your Cash Bet</div>
+    <div class="slip-header">
+      <div class="slip-title">🎟️ Place Your Cash Bet</div>
+      <div class="limit-tag">Min ₹50 · Max ₹200</div>
+    </div>
 
     <div class="selected-summary">
       <div>
@@ -191,36 +200,66 @@
       </div>
       <div style="text-align:right;">
         <div class="sel-market">Current Odds</div>
-        <div class="option-odds" id="slipOdds">1.45x</div>
+        <div class="option-odds" id="slipOdds">1.75x</div>
       </div>
     </div>
 
-    <!-- Bettor Name -->
+    <!-- Bettor Name Dropdown (All 28 Kreo Team Members) -->
     <div class="form-group">
       <label>Select Your Name</label>
       <select id="bettorSelect">
-        <option value="Ishan">Ishan Sukul</option>
-        <option value="Niloy">Niloy</option>
-        <option value="Snehal">Snehal</option>
-        <option value="Himanshu">Himanshu</option>
-        <option value="Akash">Akash</option>
-        <option value="Hemanth">Hemanth</option>
-        <option value="Sunny">Sunny</option>
-        <option value="Thirak">Thirak</option>
-        <option value="Prakash">Prakash</option>
-        <option value="Adil">Adil</option>
+        <optgroup label="Leadership & Growth">
+          <option value="Ishan Sukul">Ishan Sukul</option>
+          <option value="Himanshu Gupta">Himanshu Gupta</option>
+          <option value="Niloy Jain">Niloy Jain</option>
+          <option value="Snehal Rathi">Snehal Rathi</option>
+          <option value="Md Adil Parwez">Md Adil Parwez</option>
+          <option value="Reema Bajaj">Reema Bajaj</option>
+          <option value="Swaroop Shetty">Swaroop Shetty</option>
+          <option value="Manu Jayadev">Manu Jayadev</option>
+        </optgroup>
+        <optgroup label="Product, Design & Tech">
+          <option value="Sunny Saikia">Sunny Saikia</option>
+          <option value="Thirak Mehta">Thirak Mehta</option>
+          <option value="Pratik Sinha">Pratik Sinha</option>
+          <option value="T Sai Aayush">T Sai Aayush</option>
+          <option value="Siddhartha Singh">Siddhartha Singh</option>
+          <option value="Akash">Akash</option>
+          <option value="Hemanth">Hemanth</option>
+        </optgroup>
+        <optgroup label="Marketing & Content">
+          <option value="Saloni Sukul">Saloni Sukul</option>
+          <option value="Rajdeep Jha">Rajdeep Jha</option>
+          <option value="Murtaza Bhuri Much">Murtaza Bhuri Much</option>
+        </optgroup>
+        <optgroup label="Operations & Supply Chain">
+          <option value="Puneeth M">Puneeth M</option>
+          <option value="Jesu Raj">Jesu Raj</option>
+          <option value="Shiva Kumar C V">Shiva Kumar C V</option>
+          <option value="Lavesh N">Lavesh N</option>
+          <option value="Prakash">Prakash</option>
+        </optgroup>
+        <optgroup label="Customer Success & Retention">
+          <option value="Pradeep G">Pradeep G</option>
+          <option value="Jerolin Mercy">Jerolin Mercy</option>
+          <option value="Sangamesh Salimath">Sangamesh Salimath</option>
+          <option value="Manohar Kumbar">Manohar Kumbar</option>
+          <option value="Madhumita Dey">Madhumita Dey</option>
+          <option value="Praveen PR">Praveen PR</option>
+        </optgroup>
       </select>
     </div>
 
-    <!-- Stake Amount -->
+    <!-- Stake Amount (Capped 50 to 200) -->
     <div class="form-group">
-      <label>Your Cash Stake (INR)</label>
-      <input type="number" id="stakeInput" value="500" min="50" step="50" oninput="calculateReturn()">
+      <label>Your Cash Stake (₹50 to ₹200)</label>
+      <input type="number" id="stakeInput" value="100" min="50" max="200" step="10" oninput="calculateReturn()">
+      <div class="error-msg" id="stakeError">⚠️ Bet must be between ₹50 and ₹200 only!</div>
       <div class="stake-chips">
-        <div class="chip" onclick="setStake(100)">₹100</div>
-        <div class="chip" onclick="setStake(250)">₹250</div>
-        <div class="chip active" onclick="setStake(500)">₹500</div>
-        <div class="chip" onclick="setStake(1000)">₹1,000</div>
+        <div class="chip" onclick="setStake(50)">₹50</div>
+        <div class="chip active" onclick="setStake(100)">₹100</div>
+        <div class="chip" onclick="setStake(150)">₹150</div>
+        <div class="chip" onclick="setStake(200)">₹200</div>
       </div>
     </div>
 
@@ -228,9 +267,9 @@
     <div class="return-box">
       <div>
         <div class="ret-label">Potential Cash Payout</div>
-        <div style="font-size:10px; color:#6ee7b7;">Stake + Net Profit</div>
+        <div style="font-size:10px; color:#6ee7b7;">Stake + Share of Losers' Pot</div>
       </div>
-      <div class="ret-amount" id="potentialReturn">₹725</div>
+      <div class="ret-amount" id="potentialReturn">₹175</div>
     </div>
 
     <!-- Place Bet Button -->
@@ -252,54 +291,57 @@
   <div class="settle-box">
     <div class="settle-title">⚡ Settlement & UPI Payout Engine</div>
     <p style="font-size:11px; color:#94a3b8; margin-top:4px;">
-      At 09:00 AM tomorrow, actual Shopify / BI metrics are selected. The engine automatically outputs the exact UPI credit/debit list (who pays who).
+      At 09:00 AM tomorrow, once actual sales and ROAS lock in, the system marks the winner and outputs who pays who via UPI.
     </p>
   </div>
 
 </div>
 
 <script>
-  // Initial Pool Data Structure
   let markets = {
     product: {
       name: "Highest Selling SKU",
       options: [
-        { id: "p1", name: "Swarm 75% Wireless", pool: 2400, sub: "Favorite · Keyboard" },
-        { id: "p2", name: "Hive HE Magnetic", pool: 800, sub: "High AOV · Rapid Trigger" },
-        { id: "p3", name: "Mirage Gamepad", pool: 500, sub: "Dark Horse · Controllers" },
-        { id: "p4", name: "Chimera Wireless", pool: 300, sub: "Underdog · Gaming Mouse" },
-        { id: "p5", name: "Halo 18\" Ring Light", pool: 200, sub: "High Volume · Streaming" }
+        { id: "p1", name: "Swarm 75% Wireless", pool: 600, sub: "Favorite · Mechanical Keyboard" },
+        { id: "p2", name: "Hive HE Magnetic", pool: 200, sub: "High AOV · Rapid Trigger" },
+        { id: "p3", name: "Mirage Gamepad", pool: 100, sub: "Dark Horse · Controllers" },
+        { id: "p4", name: "Chimera Wireless", pool: 100, sub: "Underdog · Gaming Mouse" },
+        { id: "p5", name: "Halo 18\" Ring Light", pool: 50, sub: "High Volume · Streaming" }
       ]
     },
     topline: {
       name: "Today's Total Net Topline",
       options: [
-        { id: "t1", name: "< ₹10.0 Lakhs", pool: 400, sub: "Slow Traffic Day" },
-        { id: "t2", name: "₹10.0L – ₹13.5 Lakhs", pool: 1200, sub: "Baseline AOP Target" },
-        { id: "t3", name: "₹13.5L – ₹16.0 Lakhs", pool: 700, sub: "Strong Ad Day" },
-        { id: "t4", name: "> ₹16.0 Lakhs (Moonshot)", pool: 200, sub: "Record Breaker" }
+        { id: "t1", name: "< ₹10.0 Lakhs", pool: 100, sub: "Slow Traffic Day" },
+        { id: "t2", name: "₹10.0L – ₹13.5 Lakhs", pool: 350, sub: "Baseline Target" },
+        { id: "t3", name: "₹13.5L – ₹16.0 Lakhs", pool: 150, sub: "Strong Ad Day" },
+        { id: "t4", name: "> ₹16.0 Lakhs (Moonshot)", pool: 50, sub: "Record Breaker" }
       ]
     },
     roas: {
       name: "Blended Marketing ROAS",
       options: [
-        { id: "r1", name: "< 4.5x", pool: 300, sub: "Heavy Burn Day" },
-        { id: "r2", name: "4.5x – 5.5x", pool: 900, sub: "Current Run-Rate" },
-        { id: "r3", name: "5.5x – 6.5x", pool: 500, sub: "Efficiency Beat" },
-        { id: "r4", name: "> 6.5x (Supercharged)", pool: 100, sub: "Max Profit Margin" }
+        { id: "r1", name: "< 4.5x", pool: 50, sub: "Heavy Burn Day" },
+        { id: "r2", name: "4.5x – 5.5x", pool: 250, sub: "Current Run-Rate" },
+        { id: "r3", name: "5.5x – 6.5x", pool: 100, sub: "Efficiency Beat" },
+        { id: "r4", name: "> 6.5x (Supercharged)", pool: 50, sub: "Max Profit Margin" }
       ]
     }
   };
 
   let liveBets = [
-    { bettor: "Niloy", market: "Top SKU", pick: "Swarm 75% Wireless", amount: 1000 },
-    { bettor: "Ishan", market: "Daily Topline", pick: "₹13.5L – ₹16.0 Lakhs", amount: 500 },
-    { bettor: "Snehal", market: "Top SKU", pick: "Hive HE Magnetic", amount: 500 },
-    { bettor: "Akash", market: "Blended ROAS", pick: "5.5x – 6.5x", amount: 500 },
-    { bettor: "Himanshu", market: "Top SKU", pick: "Swarm 75% Wireless", amount: 1000 },
-    { bettor: "Hemanth", market: "Top SKU", pick: "Mirage Gamepad", amount: 500 },
-    { bettor: "Sunny", market: "Daily Topline", pick: "₹10.0L – ₹13.5 Lakhs", amount: 500 },
-    { bettor: "Thirak", market: "Blended ROAS", pick: "4.5x – 5.5x", amount: 400 }
+    { bettor: "Niloy Jain", market: "Top SKU", pick: "Swarm 75% Wireless", amount: 200 },
+    { bettor: "Ishan Sukul", market: "Daily Topline", pick: "₹13.5L – ₹16.0 Lakhs", amount: 150 },
+    { bettor: "Snehal Rathi", market: "Top SKU", pick: "Hive HE Magnetic", amount: 100 },
+    { bettor: "Himanshu Gupta", market: "Top SKU", pick: "Swarm 75% Wireless", amount: 200 },
+    { bettor: "Akash", market: "Blended ROAS", pick: "5.5x – 6.5x", amount: 100 },
+    { bettor: "Hemanth", market: "Top SKU", pick: "Mirage Gamepad", amount: 100 },
+    { bettor: "Sunny Saikia", market: "Daily Topline", pick: "₹10.0L – ₹13.5 Lakhs", amount: 150 },
+    { bettor: "Thirak Mehta", market: "Top SKU", pick: "Swarm 75% Wireless", amount: 100 },
+    { bettor: "Md Adil Parwez", market: "Blended ROAS", pick: "4.5x – 5.5x", amount: 100 },
+    { bettor: "Reema Bajaj", market: "Daily Topline", pick: "₹10.0L – ₹13.5 Lakhs", amount: 100 },
+    { bettor: "Puneeth M", market: "Top SKU", pick: "Swarm 75% Wireless", amount: 100 },
+    { bettor: "Pradeep G", market: "Blended ROAS", pick: "4.5x – 5.5x", amount: 100 }
   ];
 
   let currentMarketKey = "product";
@@ -389,6 +431,13 @@
 
   function calculateReturn() {
     let stake = parseFloat(document.getElementById("stakeInput").value) || 0;
+    let err = document.getElementById("stakeError");
+    if (stake < 50 || stake > 200) {
+      err.style.display = "block";
+    } else {
+      err.style.display = "none";
+    }
+
     let oddsStr = document.getElementById("slipOdds").innerText.replace("x", "");
     let odds = parseFloat(oddsStr) || 1;
     let payout = Math.round(stake * odds);
@@ -398,8 +447,9 @@
   function submitBet() {
     let bettor = document.getElementById("bettorSelect").value;
     let stake = parseFloat(document.getElementById("stakeInput").value) || 0;
-    if (stake < 50) {
-      alert("Minimum bet is ₹50!");
+    
+    if (stake < 50 || stake > 200) {
+      alert("Strict rule: Bets must be between ₹50 and ₹200 only!");
       return;
     }
 
@@ -414,7 +464,7 @@
       amount: stake
     });
 
-    confetti({ particleCount: 60, spread: 60, origin: { y: 0.8 } });
+    confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 } });
 
     renderAllMarkets();
     updateTotalPot();
@@ -424,7 +474,7 @@
 
   function renderFeed() {
     let html = "";
-    liveBets.slice(0, 10).forEach(b => {
+    liveBets.slice(0, 12).forEach(b => {
       let initial = b.bettor.charAt(0);
       html += `
         <div class="bet-item">
